@@ -1,0 +1,287 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">Dashboard</ui:define>
+
+	<ui:define name="head">
+	<meta http-equiv="refresh" content="30" /> 
+	
+		<script type="text/javascript">
+               //<![CDATA[
+               function skinBar() {
+                   this.cfg.shadow = false;
+                   this.cfg.title = '';
+                   this.cfg.seriesColors = ['#3984b8','#7e8dcd'];
+                   this.cfg.grid = {
+                       background: '#ffffff',
+                       borderColor: '#ffffff',
+                       gridLineColor: '#dee4e9',
+                       shadow: false
+                   };
+                   this.cfg.axesDefaults = {
+                       borderWidth: 0.1,
+                       borderColor: 'dce2e7',
+                       rendererOptions: {
+                           textColor: '#757575'
+                       }
+                   };
+                   this.cfg.seriesDefaults = {
+                       shadow: false,
+                       lineWidth: 1,
+                       renderer: $.jqplot.BarRenderer,
+                       markerOptions: {
+                           shadow: false,
+                           size: 7,
+                           style: 'circle'
+                       }
+                   }
+               }
+
+
+             
+        
+          
+               //]]>  
+           </script>
+		<style type="text/css">
+.main-content {
+	padding: 0;
+}
+
+.ui-icon-circle-triangle-e:before{
+color: #5FC6C4;
+}
+.ui-icon-circle-triangle-s:before{
+color: #5FC6C4;
+}
+
+</style>
+	</ui:define>
+
+	<ui:define name="content">
+	
+		<h:head>
+	<h:outputScript library="js" name="scripts.js"/>
+	</h:head>
+	
+		<div class="ui-g dashboard">
+			<div class="ui-g-12 ui-md-6 ui-lg-3">
+				<div class="ui-g card overview-box overview-box-1 no-gutter">
+					<div class="overview-box-title">TOTAL DE VENDAS</div>
+					<div class="overview-box-details">
+						<i class="fa fa-usd overview-box-details-icon" /> <span
+							class="overview-box-details-count"><h:outputLabel
+								value="550" /></span><!-- VendaMB.vTotalVendas() -->
+					</div>
+					<div class="overview-box-stats" style="color: #3fb839">
+						<b>Última venda: </b>
+						<h:outputLabel value="13:59" > <!-- VendaMB.horaUltimaVenda().toString() -->
+						<!-- <f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy - hh:mm"/> -->
+						</h:outputLabel>
+					</div>
+				</div>
+			</div>
+			<div class="ui-g-12 ui-md-6 ui-lg-3">
+				<div class="ui-g card overview-box overview-box-2 no-gutter">
+					<div class="overview-box-title">PRODUTOS CADASTRADOS</div>
+					<div class="overview-box-details">
+						<i class="fa fa-medkit overview-box-details-icon" /> <span
+							class="overview-box-details-count"><h:outputLabel id="qtdProd"
+								value="55"> <!-- {ProdutoMB.mostrarProdutos().size() -->
+								
+								</h:outputLabel></span>
+					</div>
+					<div class="overview-box-stats" style="color: #3fb839">
+						<b>Último produto: </b>
+						<h:outputLabel value="#{ProdutoMB.ultimoProdutoNome}" />
+					</div>
+				</div>
+			</div>
+			<div class="ui-g-12 ui-md-6 ui-lg-3">
+				<div class="ui-g card overview-box overview-box-3 no-gutter">
+					<div class="overview-box-title">FABRICANTES CADASTRADOS</div>
+					<div class="overview-box-details">
+						<i class="fa fa-cog overview-box-details-icon" /> <span
+							class="overview-box-details-count"><h:outputLabel id="qtdFab"
+								value="#{FabricanteMB.fabricantes}">
+				
+								
+								</h:outputLabel></span>
+					</div>
+					<div class="overview-box-stats" style="color: #3fb839">
+						<b>Último Fabricante: </b>
+						<h:outputLabel value="#{FabricanteMB.ultimoFabricanteNome}" id="ultFab">
+						
+						</h:outputLabel>
+					</div>
+				</div>
+			</div>
+			<div class="ui-g-12 ui-md-6 ui-lg-3">
+				<div class="ui-g card overview-box overview-box-4 no-gutter">
+					<div class="overview-box-title">CLIENTES CADASTRADOS</div>
+					<div class="overview-box-details">
+						<i class="fa fa-user overview-box-details-icon" /> <span
+							class="overview-box-details-count"><h:outputLabel
+								value="56" /></span><!-- ClienteMB.mostrarClientes().size() -->
+
+					</div>
+					<div class="overview-box-stats" style="color: #3fb839">
+						<b>Último cliente: </b>
+						<h:outputLabel value="#{ClienteMB.ultimoClienteNome}" />
+					</div>
+				</div>
+			</div>
+
+
+			<div class="ui-g-12 ui-lg-6 stats">
+				<p:panel header="QUANTIDADE DE VENDAS TOTAL">
+					<div class="ui-g">
+						<div class="ui-g-12 ui-lg-6 knob-container">
+							<div class="knob">
+								<h:outputLabel id="venda" value="798"><!-- VendaMB.mostrarVendas().size() -->
+							
+								</h:outputLabel>
+							</div>
+						</div>
+						<div class="ui-g-12 ui-lg-6">
+							<ul>
+								<li><span class="statsbar-text">ITENS DA VENDA</span>
+									<div class="statsbar">
+										<div class="statsbar-value" style="width: 80%"></div>
+									</div></li>
+								<li><span class="statsbar-text">PRODUTOS</span>
+									<div class="statsbar">
+										<div class="statsbar-value" style="width: 35%"></div>
+									</div></li>
+								<li><span class="statsbar-text">EMAILS ENVIADOS</span>
+									<div class="statsbar">
+										<div class="statsbar-value" style="width: 50%"></div>
+									</div></li>
+								<li><span class="statsbar-text">SATISFAÇÃO DOS CLIENTES</span>
+									<div class="statsbar">
+										<div class="statsbar-value" style="width: 72%"></div>
+									</div></li>
+								<li><span class="statsbar-text">RELATÓRIOS EMITIDOS</span>
+									<div class="statsbar">
+										<div class="statsbar-value" style="width: 15%"></div>
+									</div></li>
+							</ul>
+						</div>
+
+					</div>
+
+
+				</p:panel>
+			</div>
+			
+			<div id="users" class="ui-g-12 ui-lg-6 stats">
+				<p:panel header="VENDAS DE HOJE">
+					<div class="ui-g">
+						<div class="ui-g-12 ui-lg-6 knob-container">
+							<div class="knob" style="border-color:#39B8B6;border-left-color:#9cfffc;">
+								<h:outputLabel value="#" /><!-- {VendaMB.qtdeVendasDiaria()} -->
+							</div>
+						</div>
+						
+					
+					
+		<div class="ui-g-12 ui-lg-6">
+							<ul>
+								<li><span class="statsbar-text">ITENS DA VENDA</span>
+									<div class="statsbar">
+										<div class="statsbar-value" style="width: 15%;background-color:#39B8B6;"></div>
+									</div></li>
+								<li><span class="statsbar-text">PRODUTOS</span>
+									<div class="statsbar">
+										<div class="statsbar-value" style="width: 25%;background-color:#39B8B6;"></div>
+									</div></li>
+								<li><span class="statsbar-text">EMAILS ENVIADOS</span>
+									<div class="statsbar">
+										<div class="statsbar-value" style="width: 10%;background-color:#39B8B6;"></div>
+									</div></li>
+								<li><span class="statsbar-text">SATISFAÇÃO DOS CLIENTES</span>
+									<div class="statsbar">
+										<div class="statsbar-value" style="width: 100%;background-color:#39B8B6;"></div>
+									</div></li>
+								<li><span class="statsbar-text">RELATÓRIOS EMITIDOS</span>
+									<div class="statsbar">
+										<div class="statsbar-value" style="width: 5%;background-color:#39B8B6;"></div>
+									</div></li>
+							</ul>
+						</div>
+</div>
+				</p:panel>
+			</div>
+			
+			
+			<h2 style="margin-left: auto;
+    margin-right: auto;">
+				<b>VENDAS EFETUADAS</b>
+			</h2>
+			
+			
+			<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado." 
+					paginator="true" value="#{VendaMB.vendas}" var="venda" rows="5"
+					paginatorPosition="top">
+					
+					
+
+					<p:column style="width: 16px;" >
+						<p:rowToggler/>
+					</p:column>
+
+					<p:column headerText="Horário" sortBy="#{venda.horario}">
+						<h:outputText value="#{venda.horario}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy HH:mm" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Total / Venda" sortBy="#{venda.valorTotal}">
+						<h:outputText value="#{venda.valorTotal}">
+							<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Cliente"
+						filterBy="#{venda.cliente.pessoa.nome}"
+						sortBy="#{venda.cliente.pessoa.nome}">
+						<h:outputText value="#{venda.cliente.pessoa.nome}" />
+					</p:column>
+
+					<p:column headerText="Funcionário"
+						
+						sortBy="#{venda.funcionario.pessoa.nome}">
+						<h:outputText value="#{venda.funcionario.pessoa.nome}" />
+					</p:column>
+
+					<p:rowExpansion >
+						<p:dataTable emptyMessage="Nenhum registro encontrado."
+							value="#{venda.itensVenda}" var="itemVenda">
+							<p:column headerText="Produto" >
+								<h:outputText value="#{itemVenda.produto.descricao}" />
+							</p:column>
+							
+							<p:column headerText="Quantidade">
+								<h:outputText value="#{itemVenda.quantidade}" />
+							</p:column>
+							
+							<p:column headerText="Preço">
+								<h:outputText value="#{itemVenda.precoParcial}">
+									<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+						</p:dataTable>
+					</p:rowExpansion>
+				</p:dataTable>
+			
+
+		
+
+
+		</div>
+	</ui:define>
+
+</ui:composition>

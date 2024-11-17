@@ -1,0 +1,69 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">Perfil</ui:define>
+	<ui:define name="content">
+	
+		<div class="ui-g dashboard">
+	<div class="ui-g-12 ui-lg-4">
+				<div class="user-card">
+					<div class="user-card-header">
+						<p:graphicImage name="images/dashboard/user-card-header.png"
+							library="paradise-layout" />
+					</div>
+					<div class="user-card-content">
+						<p:graphicImage name="images/avatar.png" library="paradise-layout" />
+						<p:commandButton id="user-button" type="button"
+							icon="ui-icon-plus" styleClass="secondary" />
+
+						<p:menu overlay="true" trigger="user-button" my="left top"
+							at="left bottom">
+							<p:menuitem value="Save" icon="fa fa-check" url="#" />
+							<p:menuitem value="Update" icon="fa fa-refresh" url="#" />
+							<p:menuitem value="Delete" icon="fa fa-trash" url="#" />
+						</p:menu>
+
+						<div class="user-card-name">
+							<span>Emma Davis</span>
+						</div>
+
+						<div class="user-detail">
+							<ul>
+								<li class="clearfix"><i class="fa fa-tasks fa-fw"></i> <span
+									class="project-title">Tasks</span> <span class="project-detail">3
+										open</span>
+									<div class="project-progressbar">
+										<div class="project-progressbar-value" style="width: 50%"></div>
+									</div></li>
+								<li class="clearfix"><i class="fa fa-usd fa-fw"></i> <span
+									class="project-title">Revenue</span> <span
+									class="project-detail">+20%</span>
+									<div class="project-progressbar">
+										<div class="project-progressbar-value" style="width: 20%"></div>
+									</div></li>
+								<li class="clearfix"><i class="fa fa-credit-card fa-fw"></i>
+									<span class="project-title">Payments</span> <span
+									class="project-detail">24 new</span>
+									<div class="project-progressbar">
+										<div class="project-progressbar-value" style="width: 65%"></div>
+									</div></li>
+								<li class="clearfix"><i class="fa fa-users fa-fw"></i> <span
+									class="project-title">Clients</span> <span
+									class="project-detail">+80%</span>
+									<div class="project-progressbar">
+										<div class="project-progressbar-value" style="width: 80%"></div>
+									</div></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+	</div>
+
+
+	</ui:define>
+
+</ui:composition>

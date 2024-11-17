@@ -1,0 +1,128 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">FormasPagamento</ui:define>
+	<ui:define name="content">
+		<p:growl id="mensagem" showDetail="true" autoUpdate="true" />
+		<div class="ui-g">
+			<div class="ui-g-12">
+				<div class="card card-w-title">
+					<h1>Cadastro de Formas de Pagamento</h1>
+					<div class="card card-w-title">
+
+						<h:form id="formToolBar">
+
+							<p:toolbar style="background-color:#F2F8FA">
+								<f:facet name="left">
+									<p:commandButton value="Novo" icon="fa fa-plus"
+										oncomplete="PF('dialogo').show();"
+										actionListener="#{FormaPagamentoMB.novo}"
+										update=":formCadastro:painel" />
+
+								</f:facet>
+
+								<f:facet name="right">
+								
+								
+									<p:commandButton ajax="false" title="Exportar PDF"
+										style="background-color:#FA8072" icon="fa fa-file-pdf-o">
+										<p:dataExporter type="pdf" target="formListagem:tabela"  encoding="iso-8859-1"
+											fileName="FormasPagamento" preProcessor="#{ExportarTabelaMB.gerarPDF}" />
+										</p:commandButton>
+									<p:commandButton ajax="false" title="Exportar EXCEL"
+										style="background-color:#088A08" icon="fa fa-file-excel-o">
+										<p:dataExporter type="xls" target="formListagem:tabela"  encoding="iso-8859-1"
+											fileName="FormasPagamento" postProcessor="#{ExportarTabelaMB.gerarXLS}" />
+										</p:commandButton>
+									<span class="ui-separator" style="padding-right: 5px;">
+										<span class="fa fa-ellipsis-v SoftGray" />
+									</span>
+									<p:commandButton  id="btnImprimir" title="Relatório" ajax="false" immediate="true" process="@this" actionListener="#{FormaPagamentoMB.imprimir}"
+										icon="fa fa-print" />
+								</f:facet>
+							</p:toolbar>
+						</h:form>
+					</div>
+
+
+					<h:form id="formListagem">
+
+						<p:dataTable id="tabela" var="formapagamento"
+							value="#{FormaPagamentoMB.mostrarFormaPagamentos()}" selectionMode="single"
+							reflow="true" selection="#{FormaPagamentoMB.formaPagamento}"
+							emptyMessage="Não Existe Dados para Exibir" rowKey="#{formapagamento.id}"
+							paginator="true" rows="10">
+
+							<f:facet name="header">
+                                LISTA DE FORMAS DE PAGAMENTO
+                            </f:facet>
+
+							<p:column headerText="Id" sortBy="#{formapagamento.id}" filterBy="#{formapagamento.id}">
+								<h:outputText value="#{formapagamento.id}" />
+							</p:column>
+
+							<p:column headerText="Descrição" sortBy="#{formapagamento.descricao}"
+								filterBy="#{formapagamento.descricao}">
+								<h:outputText value="#{formapagamento.descricao}" />
+							</p:column>
+
+
+							<p:column exportable="false">
+								<p:commandButton icon="ui-icon-trash"
+									actionListener="#{FormaPagamentoMB.excluir}" 
+									update=":mensagem :formListagem:tabela"
+									style="background-color:red">
+									<p:confirm header="Confirmação" message="Deseja excluir realmente?" icon="ui-icon-trash"/>
+									<f:attribute name="formaPagamentoSelecionada" value="#{formapagamento}"/>
+								</p:commandButton>
+
+								<p:commandButton icon="ui-icon-pencil"
+									actionListener="#{FormaPagamentoMB.alterar}" 
+									update=":formCadastro:painel"
+									oncomplete="PF('dialogo').show();"
+									style="background-color:#00ABFF">
+									<f:attribute name="formaPagamentoSelecionada" value="#{formapagamento}"/>
+									</p:commandButton>
+							</p:column>
+						</p:dataTable>
+							<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				        <p:commandButton value="Sim" type="button"  styleClass="ui-confirmdialog-yes" icon="ui-icon-disk"/>
+				        <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-closethick" />
+				    </p:confirmDialog>   
+			
+					</h:form>
+				</div>
+			</div>
+		</div>
+		<p:dialog header="Formas de Pagamento - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="2">
+
+					<p:outputLabel value="Descrição:" />
+					<p:inputText required="true"
+						requiredMessage="Descrição obrigatória."
+						value="#{FormaPagamentoMB.formaPagamento.descricao}" size="30" />
+
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="fa fa-floppy-o"
+						actionListener="#{FormaPagamentoMB.salvar}"
+						update=":mensagem :formCadastro:painel :formListagem:tabela" />
+					<p:commandButton value="Fechar" icon="fa fa-times" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+
+
+
+		</p:dialog>
+
+
+	</ui:define>
+
+</ui:composition>

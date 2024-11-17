@@ -1,0 +1,71 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pv="http://primefaces.org/paradise">
+    
+    <div class="layout-menu-wrapper #{guestPreferences.darkMenu ? 'layout-menu-dark' : null}">
+        <div class="nano">
+            <div class="nano-content sidebar-scroll-content">
+                <div class="layout-menu-container">
+                    <h:form id="menuform">
+                        <div class="mobile-search">
+                            <i class="fa fa-fw fa-search topbar-search-icon"></i>
+                            <input type="text" class="topbar-search" placeholder="Type your search here"/>
+                        </div>
+                        
+                        <pv:menu>
+                            <p:menuitem id="pm_dashboard" value="Dashboard" icon="fa fa-home" outcome="/dashboard" />
+                            <p:submenu id="pm_menu" label="Cadastros" icon="fa fa-plus" rendered="#{AutenticacaoMB.temPermissoes(['A,G'])}">
+                            	<p:menuitem id="pm_pessoas" value="Pessoas" icon="fa fa-heart" actionListener="#" ajax="false" outcome="Pessoas"/>
+                                <p:menuitem id="pm_static_menu" value="Clientes" icon="fa fa-fw fa-user-plus" actionListener="#" ajax="false" outcome="Clientes"/>
+                                <p:menuitem id="pm_overlay_menu" value="Funcionários" icon="fa fa-users" actionListener="#" ajax="false" outcome="Funcionarios"/>
+                                <p:menuitem id="pm_slim_menu" value="Produtos" icon="fa fa-medkit" actionListener="#" ajax="false" outcome="Produtos"/>
+                                <p:menuitem id="pm_categorias" value="Categorias" icon="fa fa-th-large" actionListener="#" ajax="false" outcome="Categorias"/>
+                                <p:menuitem id="pm_fabricantes" value="Fabricantes" icon="fa fa-cog" actionListener="#" ajax="false" outcome="Fabricantes"/>
+                                <p:menuitem id="pm_usuarios" value="Usuários" icon="fa fa-user-circle-o" actionListener="#" ajax="false" outcome="Usuarios"/>
+                                <p:menuitem id="pm_formaPagamento" value="Formas de Pagamento" icon="fa fa-credit-card" actionListener="#" ajax="false" outcome="FormasPagamento"/>
+                                <p:menuitem id="pm_estados" value="Estados" icon="fa fa-flag" actionListener="#" ajax="false" outcome="Estados"/>
+                                <p:menuitem id="pm_cidades" value="Cidades" icon="fa fa-map-pin" actionListener="#" ajax="false" outcome="Cidades"/>
+                               
+                               
+                               
+                            </p:submenu>
+                            
+                            <p:submenu id="pm_menuMovimentacoes" label="Movimentações" icon="fa fa-globe">
+                                <p:menuitem id="pm_vendas" value="Fazer Venda" icon="fa fa-fw fa-dollar" actionListener="#{guestPreferences.setOverlayMenu(false)}" ajax="false" outcome="Vendas"/>
+                              
+                            </p:submenu>
+                            
+                            
+                          <p:submenu id="pm_menuRelatorios" label="Relatórios" icon="fa fa-file-o">
+                                <p:menuitem id="pm_relatorioVendas" value="Vendas" icon="fa fa-fw fa-dollar" actionListener="#{VendaMB.imprimir}" ajax="false"/>
+                                <p:menuitem id="pm_relatorioClientes" value="Clientes" icon="fa fa-user" actionListener="#{ClienteMB.imprimir}" ajax="false"/>
+                                <p:menuitem id="pm_relatorioProdutos" value="Produtos" icon="fa fa-medkit" actionListener="#{ProdutoMB.imprimir}" ajax="false"/>
+                                <p:menuitem id="pm_relatorioCategorias" value="Categorias" icon="fa fa-th-large" actionListener="#{CategoriaMB.imprimir}" ajax="false"/>
+                                <p:menuitem id="pm_relatorioPessoas" value="Pessoas" icon="fa fa-heart" actionListener="#{PessoaMB.imprimir}" ajax="false"/>
+                                <p:menuitem id="pm_relatorioEstados" value="Estados" icon="fa fa-flag" actionListener="#{EstadoMB.imprimir}" ajax="false"/>
+                                <p:menuitem id="pm_relatorioCidades" value="Cidades" icon="fa fa-map-pin" actionListener="#{CidadeMB.imprimir}" ajax="false"/>
+                                <p:menuitem id="pm_relatorioFormaPgto" value="Formas de Pagamento" icon="fa fa-credit-card" actionListener="#{FormaPagamentoMB.imprimir}" ajax="false"/>
+                                <p:menuitem id="pm_relatorioFabricantes" value="Fabricantes" icon="fa fa-cog" actionListener="#{FabricanteMB.imprimir}" ajax="false"/>
+                                <p:menuitem id="pm_relatorioFuncionarios" value="Funcionarios" icon="fa fa-users" actionListener="#{FuncionarioMB.imprimir}" ajax="false"/>
+                                
+                               
+                            </p:submenu>
+				      
+                            
+                              <p:menuitem id="pm_dark_menu2" value="Dark Menu" icon="fa fa-moon-o" actionListener="#{guestPreferences.setDarkMenu(true)}" ajax="false"/>
+                                <p:menuitem id="pm_light_menu2" value="Light Menu" icon="fa fa-sun-o" actionListener="#{guestPreferences.setDarkMenu(false)}" ajax="false"/>
+                           
+                           
+                           
+                        </pv:menu>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</ui:composition>

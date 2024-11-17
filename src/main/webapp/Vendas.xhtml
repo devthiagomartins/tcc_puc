@@ -1,0 +1,274 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">Venda</ui:define>
+	<ui:define name="content">
+		<p:growl id="mensagem" showDetail="true" autoUpdate="true" />
+
+		<h:form id="formulario">
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card card-w-title">
+						<i class="fa fa-medkit" aria-hidden="true" />
+						<h1>
+							<b>VENDAS</b>
+						</h1>
+
+
+
+						<p:panel id="basic" header="Adicionar Produtos" toggleable="true"
+							collapsed="true">
+							<p:dataTable id="tabelaProduto" var="produto"
+								paginatorPosition="bottom" value="#{VendaMB.produtos}"
+								reflow="true" emptyMessage="Não Existe Dados para Exibir"
+								paginator="true" rows="3">
+
+
+								<p:column headerText="Descrição" sortBy="#{produto.descricao}"
+									filterBy="#{produto.descricao}">
+									<h:outputText value="#{produto.descricao}" />
+								</p:column>
+
+								<p:column headerText="Categoria"
+									sortBy="#{produto.categoria.descricao}"
+									filterBy="#{produto.categoria.descricao}">
+									<h:outputText value="#{produto.categoria.descricao}" />
+								</p:column>
+
+								<p:column headerText="Preço" sortBy="#{produto.preco}"
+									filterBy="#{produto.preco}">
+									<h:outputText value="#{produto.preco}">
+										<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="Quantidade" sortBy="#{produto.quantidade}"
+									filterBy="#{produto.quantidade}">
+									<h:outputText value="#{produto.quantidade}" />
+								</p:column>
+
+
+
+
+								<p:column headerText="Adicionar ao carrinho">
+
+									<p:commandButton icon="fa fa-plus" style="background-color:red"
+										actionListener="#{VendaMB.adicionar}"
+										update=":formulario:tabelaCesta :formulario:painelFinalizacao">
+										<f:attribute name="produtoSelecionado" value="#{produto}" />
+									</p:commandButton>
+
+
+								</p:column>
+							</p:dataTable>
+						</p:panel>
+
+
+					</div>
+				</div>
+			</div>
+
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card card-w-title">
+						<i class="fa fa-shopping-cart" aria-hidden="true" />
+						<h1>
+							<b>Carrinho</b>
+						</h1>
+
+
+						<p:panel id="basic1" header="Itens da Venda" toggleable="true"
+							collapsed="true">
+							<p:dataTable id="tabelaCesta" var="itemVenda"
+								paginatorPosition="bottom" value="#{VendaMB.itensVenda}"
+								reflow="true" emptyMessage="Não Existe Dados para Exibir"
+								paginator="true" rows="3">
+
+
+								<p:column headerText="Descrição"
+									sortBy="#{itemVenda.produto.descricao}"
+									filterBy="#{itemVenda.produto.descricao}">
+									<h:outputText value="#{itemVenda.produto.descricao}" />
+								</p:column>
+
+								<p:column headerText="Valor Unitário"
+									sortBy="#{itemVenda.produto.preco}"
+									filterBy="#{itemVenda.produto.preco}">
+									<h:outputText value="#{itemVenda.produto.preco}">
+										<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+									</h:outputText>
+								</p:column>
+
+
+
+								<p:column headerText="Quantidade"
+									sortBy="#{itemVenda.quantidade}"
+									filterBy="#{itemVenda.quantidade}">
+									<h:outputText value="#{itemVenda.quantidade}" />
+								</p:column>
+
+								<p:column headerText="Preço parcial"
+									sortBy="#{itemVenda.precoParcial}"
+									filterBy="#{itemVenda.precoParcial}">
+									<h:outputText value="#{itemVenda.precoParcial}">
+										<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="Remover">
+									<p:commandButton
+										update=":formulario:tabelaCesta :formulario:painelFinalizacao"
+										actionListener="#{VendaMB.remover}" icon="fa fa-minus"
+										style="background-color:red">
+										<f:attribute name="itemSelecionado" value="#{itemVenda}" />
+									</p:commandButton>
+
+								</p:column>
+
+							</p:dataTable>
+						</p:panel>
+
+
+					</div>
+				</div>
+			</div>
+
+
+
+
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card card-w-title">
+						<i class="fa fa-dollar" aria-hidden="true" />
+						<h1>
+							<b>Fechamento</b>
+						</h1>
+
+
+						<p:panel id="basic2" header="Finalizar Venda">
+							<h:panelGrid id="painelFinalizacao" columns="3">
+								<p:outputLabel style="font-weight:bold" value="Total: R$" />
+								<h:outputText value="#{VendaMB.venda.valorTotal}">
+									<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+								</h:outputText>
+								<p:commandButton oncomplete="PF('dialogo').show();"
+									icon="fa fa-check" value="Finalizar"
+									actionListener="#{VendaMB.finalizar}"
+									update=":mensagem :formularioFinalizar:painelFinalizar" />
+							</h:panelGrid>
+						</p:panel>
+
+
+					</div>
+				</div>
+			</div>
+
+		</h:form>
+
+
+		<p:dialog id="dlgEmail" header="Enviar Email" widgetVar="email" draggable="false"
+			resizable="false" modal="true">
+			<h:panelGrid columns="1">
+				<h:outputLabel value="Deseja enviar um e-mail ao cliente ?" />
+			</h:panelGrid>
+
+
+			<h:panelGrid id="painelEmail" columns="2">
+				<p:commandButton value="Sim" icon="fa fa-check"  widgetVar="startButton2" 
+					actionListener="#{VendaMB.sendMail()}"  action="#{VendaMB.cancel}"
+					oncomplete="PF('email').hide();PF('pbAjax').cancel();" onclick="PF('pbAjax').start(); PF('startButton2').disable(); PF('buttonnot').disable();" listener="#{VendaMB.onComplete}" update=":mensagem :painelEmail :pbbar">
+				</p:commandButton>
+				<p:commandButton value="Não" icon="fa fa-times" widgetVar="buttonnot"
+					oncomplete="PF('email').hide(); PF('pbAjax').cancel();" />
+					</h:panelGrid>
+			<h:panelGrid id="pbbar" columns="2">
+				<p:progressBar id="pb" widgetVar="pbAjax" ajax="true" style="width:300px"
+					value="#{VendaMB.progress1}" labelTemplate="{value}%" 
+					styleClass="animated" global="false">
+					<p:ajax event="complete" 
+						oncomplete="PF('startButton2').enable(); PF('pbAjax').cancel()"/>
+				</p:progressBar>
+				</h:panelGrid>
+			
+
+
+		</p:dialog>
+
+
+		<p:dialog header="Venda - Fechamento" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true">
+			<h:form id="formularioFinalizar">
+				<h:panelGrid id="painelFinalizar" columns="2">
+
+
+					<p:outputLabel style="font-weight:bold" value="Total: R$" />
+					<h:outputText style="font-weight:bold;color:red"
+						value="#{VendaMB.venda.valorTotal}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputText>
+
+					<p:outputLabel value="Horário:" />
+					<h:outputText value="#{VendaMB.venda.horario}">
+						<f:convertDateTime pattern="dd/MM/yyyy | HH:mm" locale="pt_BR" />
+					</h:outputText>
+
+
+					<p:outputLabel for="cliente" value="Cliente:" />
+					<p:selectOneMenu id="cliente" value="#{VendaMB.venda.cliente}"
+						converter="omnifaces.SelectItemsConverter" filter="true">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione um cliente" />
+						<f:selectItems value="#{VendaMB.clientes}" var="cliente"
+							itemValue="#{cliente}" itemLabel="#{cliente.pessoa.nome}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="funcionario" value="Funcionário:" />
+					<p:selectOneMenu id="funcionario" style="width:204px"
+						value="#{VendaMB.venda.funcionario}" required="true"
+						requiredMessage="Funcionário obrigatório."
+						converter="omnifaces.SelectItemsConverter" filter="true">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione um funcionário" />
+						<f:selectItems value="#{VendaMB.funcionarios}" var="funcionario"
+							itemValue="#{funcionario}"
+							itemLabel="#{funcionario.pessoa.nome} - #{funcionario.pessoa.cpf} " />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="formaPagamento" value="Forma de Pagamento:" />
+					<p:selectOneMenu id="formaPagamento" style="width:204px"
+						value="#{VendaMB.venda.formaPagamento}" required="true"
+						requiredMessage="Forma de Pagamento obrigatória."
+						converter="omnifaces.SelectItemsConverter" filter="true">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma forma" />
+						<f:selectItems value="#{VendaMB.formaPagamentos}"
+							var="formaPagamento" itemValue="#{formaPagamento}"
+							itemLabel="#{formaPagamento.descricao}" />
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="fa fa-floppy-o"
+						actionListener="#{VendaMB.salvar}"
+						update=":mensagem :formulario:tabelaProduto :formulario:tabelaCesta :formulario:painelFinalizacao"
+						oncomplete="PF('dialogo').hide();" onsuccess="PF('email').show();">
+					</p:commandButton>
+					<p:commandButton value="Fechar" icon="fa fa-times"
+						oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+
+
+
+			</h:form>
+		</p:dialog>
+
+
+
+	</ui:define>
+
+</ui:composition>

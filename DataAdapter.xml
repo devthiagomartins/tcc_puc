@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<jdbcDataAdapter class="net.sf.jasperreports.data.jdbc.JdbcDataAdapterImpl"><name>TCC Data Adapter</name><driver>com.mysql.jdbc.Driver</driver><username>root</username><password>QYCzVYsBqvSXNSYUKo7YCVedsTQwsCyj</password><savePassword>true</savePassword><url>jdbc:mysql://144.22.176.180:3306/tcc</url><database></database><serverAddress></serverAddress><classpath>C:\Users\Administrador\Downloads\mysql-connector-java-8.0.21.jar</classpath><properties><key>serverTimezone</key><value>UTC</value></properties></jdbcDataAdapter>

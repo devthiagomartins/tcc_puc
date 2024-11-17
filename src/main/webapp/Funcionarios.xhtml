@@ -1,0 +1,165 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">Funcionários</ui:define>
+	<ui:define name="content">
+	
+	<h:head>
+	<h:outputScript library="js" name="scripts.js"/>
+	</h:head>
+	
+		<p:growl id="mensagem" showDetail="true" autoUpdate="true" />
+		<div class="ui-g">
+			<div class="ui-g-12">
+				<div class="card card-w-title">
+					<h1>Cadastro de Funcionários</h1>
+					<div class="card card-w-title">
+
+						<h:form id="formToolBar">
+
+							<p:toolbar style="background-color:#F2F8FA">
+								<f:facet name="left">
+									<p:commandButton value="Novo" icon="fa fa-plus"
+										oncomplete="PF('dialogo').show();"
+										actionListener="#{FuncionarioMB.novo}"
+										update=":formCadastro:painel :mensagem" />
+
+								</f:facet>
+
+								<f:facet name="right">
+								
+								
+									<p:commandButton ajax="false" title="Exportar PDF"
+										style="background-color:#FA8072" icon="fa fa-file-pdf-o">
+										<p:dataExporter type="pdf" target="formListagem:tabela"  encoding="iso-8859-1"
+											fileName="Funcionários" preProcessor="#{ExportarTabelaMB.gerarPDF}" />
+										</p:commandButton>
+									<p:commandButton ajax="false" title="Exportar EXCEL"
+										style="background-color:#088A08" icon="fa fa-file-excel-o">
+										<p:dataExporter type="xls" target="formListagem:tabela"  encoding="iso-8859-1"
+											fileName="Funcionários" postProcessor="#{ExportarTabelaMB.gerarXLS}" />
+										</p:commandButton>
+									<span class="ui-separator" style="padding-right: 5px;">
+										<span class="fa fa-ellipsis-v SoftGray" />
+									</span>
+									<p:commandButton  id="btnImprimir" title="Relatório" ajax="false" immediate="true" process="@this" actionListener="#{FuncionarioMB.imprimir}"
+										icon="fa fa-print" />
+								</f:facet>
+							</p:toolbar>
+						</h:form>
+					</div>
+
+
+					<h:form id="formListagem">
+
+						<p:dataTable id="tabela" var="func"
+							value="#{FuncionarioMB.mostrarFuncionarios()}" selectionMode="single"
+							reflow="true" selection="#{FuncionarioMB.funcionario}"
+							emptyMessage="Não Existe Dados para Exibir" rowKey="#{func.id}"
+							paginator="true" rows="10">
+
+							<f:facet name="header">
+                                LISTA DE FUNCIONÁRIOS
+                            </f:facet>
+
+							<p:column headerText="Id" sortBy="#{func.id}" filterBy="#{func.id}">
+								<h:outputText value="#{func.id}" />
+							</p:column>
+
+							<p:column headerText="Descrição" sortBy="#{func.pessoa.nome}"
+								filterBy="#{func.pessoa.nome}">
+								<h:outputText value="#{func.pessoa.nome}" />
+							</p:column>
+							
+			
+								<p:column headerText="Data / Admissão" sortBy="#{func.dataAdmissao}"
+								filterBy="#{func.dataAdmissao}">
+								<h:outputText value="#{func.dataAdmissao}" />
+							</p:column>
+							
+								<p:column headerText="Status" sortBy="#{func.ativoString}"
+								filterBy="#{func.ativoString}">
+								<h:outputText value="#{func.ativoString}" />
+							</p:column>
+	
+							<p:column exportable="false">
+								<p:commandButton actionListener="#{FuncionarioMB.excluir}"
+									update=":mensagem :formListagem:tabela" icon="ui-icon-trash"
+									style="background-color:red;">
+									<p:confirm header="Confirmação"
+										message="Deseja excluir realmente?" icon="ui-icon-trash" />
+									<f:attribute name="funcionarioSelecionado" value="#{func}" />
+								</p:commandButton>
+
+								<p:commandButton icon="ui-icon-pencil"
+									actionListener="#{FuncionarioMB.alterar}"
+									update=":formCadastro:painel"
+									oncomplete="PF('dialogo').show();"
+									style="background-color:#00ABFF">
+									<f:attribute name="funcionarioSelecionado" value="#{func}" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							<p:commandButton value="Sim" type="button"
+								styleClass="ui-confirmdialog-yes" icon="ui-icon-disk" />
+							<p:commandButton value="Não" type="button"
+								styleClass="ui-confirmdialog-no" icon="ui-icon-closethick" />
+						</p:confirmDialog>
+
+					</h:form>
+				</div>
+			</div>
+		</div>
+		<p:dialog header="Funcionário - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="2">
+
+						<p:outputLabel for="dtAdmissao" value="Data / Admissão:" />
+					<p:calendar id="dtAdmissao"
+						value="#{FuncionarioMB.funcionario.dataAdmissao}" showOn="button" required="true" requiredMessage="Data / Admissão obrigatória."/>
+					
+				
+					<p:outputLabel for="pessoa" value="Pessoa:" />
+					<p:selectOneMenu id="pessoa" filter="true" required="true"
+						requiredMessage="Pessoa obrigatória" style="width:198px"
+						value="#{FuncionarioMB.funcionario.pessoa}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma pessoa." />
+						<f:selectItems value="#{FuncionarioMB.pessoas}" var="pessoa"
+							itemValue="#{pessoa}" itemLabel="#{pessoa.nome}" />
+					</p:selectOneMenu>
+					
+					
+ 					<p:outputLabel for="ct" value="Carteira de trabalho:"/>
+ 					<p:inputText id="ct" required="true" requiredMessage="Carteira de trabalho obrigatória." 
+ 					value="#{FuncionarioMB.funcionario.carteiraTrabalho}"/>
+ 			
+					
+					<p:outputLabel value="Ativo:" />
+					<p:selectBooleanCheckbox required="true" requiredMessage="Campo 'Ativo' obrigatório." value="#{FuncionarioMB.funcionario.ativo}"/>
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="fa fa-floppy-o"
+						actionListener="#{FuncionarioMB.salvar}"
+						update=":mensagem :formCadastro:painel :formListagem:tabela" />
+					<p:commandButton value="Fechar" icon="fa fa-times" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+
+
+
+		</p:dialog>
+
+
+	</ui:define>
+
+</ui:composition>

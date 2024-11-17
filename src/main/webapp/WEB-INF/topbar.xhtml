@@ -1,0 +1,78 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pa="http://primefaces.org/paradise">
+
+    <div class="topbar">
+        <h:link outcome="/dashboard" styleClass="topbar-logo">
+            <p:graphicImage name="images/#{guestPreferences.layout == 'default' ? 'logo-black.png' : 'logo-white.png'}" style="border: 0px;" library="paradise-layout" />
+        </h:link>
+        
+        <a href="#" id="menu-button">
+            <i class="fa fa-bars"></i>
+        </a>
+        
+        <a href="#" id="user-display">
+            <span class="username"><h:outputLabel value="#{AutenticacaoMB.usuarioLogado.pessoa.nome}" /></span>
+            <span class="username"><h:outputLabel  style="border:solid 2px;border-radius:10px;width:35px;font-weight:bold">
+            <h:outputText value="&#160;#{AutenticacaoMB.usuarioLogado.tipoString}&#160;"/>
+            </h:outputLabel></span>
+            
+           
+        
+            <p:graphicImage name="images/avatar4.png" library="paradise-layout" style="border: 0px;"/>
+            <i class="fa fa-angle-down"></i>
+        </a>
+        
+        <label for="topbar-search">
+            <i class="fa fa-search topbar-search-icon"></i>
+        </label>
+        <input type="text" class="topbar-search" placeholder="Faça uma busca" id="topbar-search" />
+<h:form id="formBar">
+        <ul id="topbar-menu" class="fadeInDown animated">
+            <li>
+                <a href="#">
+                    <i class="topbar-icon fa fa-fw fa-user"></i>
+                    <span class="topbar-item-name">Perfil</span>
+                </a>
+                <ul>
+                    <li role="menuitem">
+                        <a href="#">
+                            <i class="fa fa-fw fa-user"></i>
+                            <span>Perfil</span>
+                        </a>
+                    </li>
+                    <li role="menuitem">
+                        <a href="#">
+                            <i class="fa fa-fw fa-cog"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </li>
+                 
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="topbar-icon material-icons animated swing fa fa-dollar fa-envelope-o"></i>
+                    <span class="topbar-item-name">Vendas realizadas</span>
+                    <span class="topbar-badge animated rubberBand">
+                    <h:outputText id="notificacaoVenda" value="#"> <!-- VendaMB.qtdeVendasDiaria() -->"
+                    </h:outputText></span>
+                </a>
+              
+            </li>
+            <li>
+                <a href="login.xhtml">
+                    <i class="topbar-icon fa fa-fw fa-sign-out"></i>
+                    <span class="topbar-item-name">Sair</span>
+                </a>
+              
+            </li>
+        </ul>
+        </h:form>
+    </div>
+
+</ui:composition>

@@ -1,0 +1,216 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+<h:head>
+	<title>Controle Viagem</title> 
+	<h:outputScript library="js" name="scripts.js"></h:outputScript>
+</h:head>
+   <ui:define name="content">
+ 	   <div class="Container100 ui-fluid">
+         <div class="ContainerIndent">
+		 	<h:form>     
+	 
+		    <p:toolbar >
+		        <f:facet name="left">
+		           <p:commandButton action="#{MklControleViagemMB.NovoControleViagem()}" icon="ui-icon-circle-plus" title="Teste"  value="Novo" process="@this" update="@none" />
+		        </f:facet>
+		     </p:toolbar>
+		</h:form>
+		         
+       </div>
+        </div>
+ 
+ 	      <div class="Container100 ui-fluid">
+            <div class="ContainerIndent">
+
+			<h:form id="frmlista">
+				<p:messages id="messages" showDetail="true" closable="true" >
+					<p:panel id="painellista">
+						<p:dataTable id="Tabelalista" var="cv"
+							emptyMessage="Não Existe Dados para Exibir"
+							value="#{MklControleViagemMB.mostrarControleViagem()}" paginator="true" rows="9" disabledSelection="false" 
+							rowKey="#{cv.CVID}" selectionMode="single"  selection="#{MklControleViagemMB.mklControleViagem}">
+
+							<p:ajax event="rowSelect" listener="#{MklControleViagemMB.onRowSelect}" update=":frmlista"/>
+							
+   						<p:column style="width:2px">
+								<f:facet name="header">
+									<h:outputText  value="ID" />
+								</f:facet>
+								<h:outputText value="#{cv.CVID}" />
+							</p:column>
+							
+							<p:column style="width:2px">
+								<f:facet name="header">
+									<h:outputText value="Data/Solicitacao" />
+								</f:facet>
+								<h:outputText value="#{cv.CVDataSolicitacao}" />
+							</p:column>
+							
+							<p:column style="width:30px">
+								<f:facet name="header">
+									<h:outputText value="Requisitante" />
+								</f:facet>
+								<h:outputText value="#{cv.CVRequisitante}" />
+							</p:column>
+							
+							<p:column style="width:3px">
+								<f:facet name="header">
+									<h:outputText value="Data/Início" />
+								</f:facet>
+								<h:outputText value="#{cv.CVDataInicio}" />
+							</p:column>
+							<p:column style="width:3px">
+								<f:facet name="header">
+									<h:outputText value="Data/Término" />
+								</f:facet>
+								<h:outputText value="#{cv.CVDataTermino}" />
+							</p:column>
+								
+							<p:column style="width:1px">
+								<p:commandButton action="#{MklControleViagemMB.excluir(MklControleViagemMB.mklControleViagem)}" icon="ui-icon-trash" >
+				        		<p:confirm header="Confirmação" message="Você tem certeza?" icon="ui-icon-trash" />
+				    			</p:commandButton>	
+								
+								<p:commandButton icon="ui-icon-pencil" action="#{MklControleViagemMB.alterar(MklControleViagemMB.mklControleViagem)}"  onclick="PF('altera').show()" type="button" />
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+		</p:messages>
+	
+				<p:dialog header="Alteração Cadastro" modal="true" widgetVar="altera" resizable="false" draggable="false" showEffect="side" width="940px" contentWidth="100%" height="400px">
+						<form id="frmalterar">
+							<p:panel id="basic" header="Controle de Viagens - Inclusão"
+								style="margin-bottom:20px">
+								<p:panelGrid columns="6"
+									columnClasses="ui-grid-col-1,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3,ui-grid-col-1,ui-grid-col-2"
+									layout="grid" styleClass="ui-panelgrid-blank"
+									style="border:0px none; background-color:transparent;">
+
+									<h:outputLabel value="Data / Solicitação" />
+									<p:calendar locale="pt_BR" id="btnLicitacao" value="#{MklControleViagemMB.mklControleViagem.CVDataSolicitacao}" showOn="button" />
+									<h:outputLabel value="Requisitante" />
+									<p:inputText value="#{MklControleViagemMB.mklControleViagem.CVRequisitante}"  size="40" />
+
+								</p:panelGrid>
+								<p:panel header="Dados da Viagem">
+									<p:tabView>
+										<p:tab title="Viagem">
+											<p:panelGrid columns="6"
+												columnClasses="ui-grid-col-1,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3,ui-grid-col-1,ui-grid-col-2"
+												layout="grid" styleClass="ui-panelgrid-blank"
+												style="border:0px none; background-color:transparent;">
+
+												<h:outputLabel value="Data / Início:" />
+												<p:calendar locale="pt_BR" id="dataInicio" value="#{MklControleViagemMB.dataInicio}" 	showOn="button" >
+												<p:ajax event="dateSelect" update="dtFim" />
+												</p:calendar>
+												
+												
+												<h:outputLabel value="Data / Término:" />
+												<p:calendar id="dtFim" mindate="#{MklControleViagemMB.dataInicio}" locale="pt_BR" value="#{MklControleViagemMB.dataTermino}" showOn="button" />
+
+												<h:outputLabel value="Justificativa:" />
+												<p:inputText value="#{MklControleViagemMB.mklControleViagem.CVJustificativa}" size="40" />
+
+												<h:outputLabel value="Objetivo:" />
+												<p:inputText value="#{MklControleViagemMB.mklControleViagem.CVObjetivo}" size="40" />
+											</p:panelGrid>
+										</p:tab>
+
+										<p:tab title="Motorista">
+											<p:panelGrid columns="6" columnClasses="ui-grid-col-0,ui-grid-col-1,ui-grid-col-1,ui-grid-col-0,ui-grid-col-1,ui-grid-col-2"
+												layout="grid" styleClass="ui-panelgrid-blank" style="border:0px none; background-color:transparent;">
+
+												<h:outputLabel value="Motorista:&#160;" />
+												<p:inputText id="motorista" value="#{MklControleViagemMB.mklControleViagem.CVMotorista}" size="25" />
+												<p:commandButton icon="ui-icon-search" title="Pesquisa" action="#{MklConsultaMotoristaMB.AbrirSelecionaMotorista}"
+													process="@this" update="@none">
+													<p:ajax event="dialogReturn"
+														listener="#{MklControleViagemMB.motoristaSelecionado}"
+														process="@this" update="motorista" />
+													<p:resetInput target="motorista" />
+												</p:commandButton>
+											</p:panelGrid>
+										</p:tab>
+
+										<p:tab title="Veículo">
+											<p:panelGrid columns="6"
+												columnClasses="ui-grid-col-0,ui-grid-col-1,ui-grid-col-1,ui-grid-col-0,ui-grid-col-1,ui-grid-col-2"
+												layout="grid" styleClass="ui-panelgrid-blank"
+												style="border:0px none; background-color:transparent;">
+
+												<h:outputLabel value="Veículo:&#160;" />
+												<p:inputText id="veiculo"
+													value="#{MklControleViagemMB.mklControleViagem.VEI_ID}"
+													size="17" />
+												<p:commandButton icon="ui-icon-search" title="Pesquisa"
+													action="#{MklConsultaVeiculoMB.AbrirSelecionaVeiculo}"
+													process="@this" update="@none">
+													<p:ajax event="dialogReturn"
+														listener="#{MklControleViagemMB.veiculoSelecionado}"
+														process="@this" update="veiculo" />
+													<p:resetInput target="veiculo" />
+												</p:commandButton>
+												<h:outputLabel size="10px" value="Quilometragem" />
+												<p:inputText id="km"
+													value="#{MklControleViagemMB.mklControleViagem.CVQuilometragem}" />
+											</p:panelGrid>
+										</p:tab>
+
+										<p:tab title="Itens">
+
+											<p:panelGrid columns="6"
+												columnClasses="ui-grid-col-1,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3"
+												layout="grid" styleClass="ui-panelgrid-blank"
+												style="border:0px none; background-color:transparent;">
+
+												<h:outputLabel value="Origem" />
+												<p:inputText
+													value="#{MklControleViagemMB.mklControleViagemItens.CVIOrigem}"
+													size="45" />
+
+												<h:outputLabel value="Horário / Saída:* " />
+												<p:calendar
+													value="#{MklControleViagemMB.mklControleViagemItens.CVIHoraSaida}"
+													pattern="HH:mm" timeOnly="true" />
+
+												<h:outputLabel value="Horário / Chegada:* " for="horaFinal" />
+												<p:calendar id="horaFinal"
+													value="#{MklControleViagemMB.mklControleViagemItens.CVIHoraChegada}"
+													pattern="HH:mm" timeOnly="true" />
+
+												<h:outputLabel value="Destino" />
+												<p:inputText
+													value="#{MklControleViagemMB.mklControleViagemItens.CVIDestino}"
+													size="45" />
+
+											</p:panelGrid>
+										</p:tab>
+									</p:tabView>
+								<p:panelGrid columns="1" columnClasses="ui-grid-col-2" layout="grid" styleClass="ui-panelgrid-blank" style="border:0px none; background-color:transparent;">
+												
+									<p:commandButton icon="ui-icon-disk" value="Salvar" action="#{MklControleViagemMB.alterar()}" update=":frmlista" />
+									<p:commandButton value="Cancelar" 	oncomplete="PF('altera').hide()" update=":frmlista" />
+								</p:panelGrid>	
+		
+								</p:panel>
+							</p:panel>
+						</form>
+					</p:dialog>
+
+					<h:form>     
+				    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				        <p:commandButton value="Sim" type="button" action="#{MklControleViagemMB.excluir(MklControleViagemMB.mklControleViagem)}" styleClass="ui-confirmdialog-yes" icon="ui-icon-disk" update=":frmlista" />
+				        <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-closethick" update=":frmlista" />
+				    </p:confirmDialog>      
+				</h:form>
+				
+			</h:form>
+          </div>
+        </div>
+    </ui:define>
+</ui:composition>

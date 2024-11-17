@@ -1,0 +1,152 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">Cidades</ui:define>
+	<ui:define name="content">
+		<p:growl id="mensagem" showDetail="true" autoUpdate="true" />
+		<div class="ui-g">
+			<div class="ui-g-12">
+				<div class="card card-w-title">
+					<h1>Cadastro de Cidades</h1>
+					<div class="card card-w-title">
+
+						<h:form id="formToolBar">
+
+							<p:toolbar style="background-color:#F2F8FA">
+								<f:facet name="left">
+									<p:commandButton value="Novo" icon="fa fa-plus"
+										oncomplete="PF('dialogo').show();"
+										actionListener="#{CidadeMB.novo}"
+										update=":formCadastro:painel :mensagem" />
+
+								</f:facet>
+
+								<f:facet name="right">
+								
+								
+									<p:commandButton ajax="false" title="Exportar PDF"
+										style="background-color:#FA8072" icon="fa fa-file-pdf-o">
+										<p:dataExporter type="pdf" target="formListagem:tabela"  encoding="iso-8859-1"
+											fileName="Cidades" preProcessor="#{ExportarTabelaMB.gerarPDF}" />
+										</p:commandButton>
+									<p:commandButton ajax="false" title="Exportar EXCEL"
+										style="background-color:#088A08" icon="fa fa-file-excel-o">
+										<p:dataExporter type="xls" target="formListagem:tabela"  encoding="iso-8859-1"
+											fileName="Cidades" postProcessor="#{ExportarTabelaMB.gerarXLS}" />
+										</p:commandButton>
+									<span class="ui-separator" style="padding-right: 5px;">
+										<span class="fa fa-ellipsis-v SoftGray" />
+									</span>
+									<p:commandButton  id="btnImprimir" title="Relatório" ajax="false" immediate="true" process="@this" actionListener="#{CidadeMB.imprimir}"
+										icon="fa fa-print" />
+								</f:facet>
+							</p:toolbar>
+						</h:form>
+					</div>
+
+
+					<h:form id="formListagem">
+
+						<p:dataTable id="tabela" var="cid"
+							value="#{CidadeMB.mostrarCidades()}" selectionMode="single"
+							reflow="true" selection="#{CidadeMB.cidade}"
+							emptyMessage="Não Existe Dados para Exibir" rowKey="#{cid.id}"
+							paginator="true" rows="10">
+
+							<f:facet name="header">
+                                LISTA DE CIDADES
+                            </f:facet>
+
+							<p:column headerText="Id" sortBy="#{cid.id}" filterBy="#{cid.id}">
+								<h:outputText value="#{cid.id}" />
+							</p:column>
+
+							<p:column headerText="Descrição" sortBy="#{cid.nome}"
+								filterBy="#{cid.nome}">
+								<h:outputText value="#{cid.nome}" />
+							</p:column>
+
+							<p:column headerText="Estado" filterBy="#{cid.estado.nome}"
+								sortBy="#{cid.estado.nome}">
+								<h:outputText value="#{cid.estado.nome}" />
+								<h:outputText value=" - " />
+								<h:outputText value="#{cid.estado.sigla}" />
+							</p:column>
+
+
+
+							<p:column exportable="false">
+								<p:commandButton actionListener="#{CidadeMB.excluir}"
+									update=":mensagem :formListagem:tabela" icon="ui-icon-trash"
+									style="background-color:red;">
+									<p:confirm header="Confirmação"
+										message="Deseja excluir realmente?" icon="ui-icon-trash" />
+									<f:attribute name="cidadeSelecionada" value="#{cid}" />
+								</p:commandButton>
+
+								<p:commandButton icon="ui-icon-pencil"
+									actionListener="#{CidadeMB.alterar}"
+									update=":formCadastro:painel"
+									oncomplete="PF('dialogo').show();"
+									style="background-color:#00ABFF">
+									<f:attribute name="cidadeSelecionada" value="#{cid}" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							<p:commandButton value="Sim" type="button"
+								styleClass="ui-confirmdialog-yes" icon="ui-icon-disk" />
+							<p:commandButton value="Não" type="button"
+								styleClass="ui-confirmdialog-no" icon="ui-icon-closethick" />
+						</p:confirmDialog>
+
+					</h:form>
+				</div>
+			</div>
+		</div>
+		<p:dialog header="Cidade - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="2">
+
+						<p:outputLabel for="cidade" value="Descrição:" />
+					<p:inputText id="cidade" required="true"
+						requiredMessage="Descrição da cidade obrigatória."
+						value="#{CidadeMB.cidade.nome}" size="30" />
+					
+					
+				
+					<p:outputLabel for="estado" value="Estado:" />
+					<p:selectOneMenu id="estado" filter="true" required="true"
+						requiredMessage="Estado obrigatório" style="width:198px"
+						value="#{CidadeMB.cidade.estado}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione um estado." />
+						<f:selectItems value="#{CidadeMB.estados}" var="estado"
+							itemValue="#{estado}" itemLabel="#{estado.nome}" />
+					</p:selectOneMenu>
+
+				
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="fa fa-floppy-o"
+						actionListener="#{CidadeMB.salvar}"
+						update=":mensagem :formCadastro:painel :formListagem:tabela" />
+					<p:commandButton value="Fechar" icon="fa fa-times"  oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+
+
+
+		</p:dialog>
+
+
+	</ui:define>
+
+</ui:composition>

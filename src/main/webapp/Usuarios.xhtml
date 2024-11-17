@@ -1,0 +1,173 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">Usuários</ui:define>
+	<ui:define name="content">
+	
+	<h:head>
+	<h:outputScript library="js" name="scripts.js"/>
+	</h:head>
+	
+		<p:growl id="mensagem" showDetail="true" autoUpdate="true" />
+		<div class="ui-g">
+			<div class="ui-g-12">
+				<div class="card card-w-title">
+					<h1>Cadastro de Usuários</h1>
+					<div class="card card-w-title">
+
+						<h:form id="formToolBar">
+
+							<p:toolbar style="background-color:#F2F8FA">
+								<f:facet name="left">
+									<p:commandButton value="Novo" icon="fa fa-plus"
+										oncomplete="PF('dialogo').show();"
+										actionListener="#{UsuarioMB.novo}"
+										update=":formCadastro:painel :mensagem" />
+
+								</f:facet>
+
+								<f:facet name="right">
+								
+								
+									<p:commandButton ajax="false" title="Exportar PDF"
+										style="background-color:#FA8072" icon="fa fa-file-pdf-o">
+										<p:dataExporter type="pdf" target="formListagem:tabela"  encoding="iso-8859-1"
+											fileName="Usuarios" preProcessor="#{ExportarTabelaMB.gerarPDF}" />
+										</p:commandButton>
+									<p:commandButton ajax="false" title="Exportar EXCEL"
+										style="background-color:#088A08" icon="fa fa-file-excel-o">
+										<p:dataExporter type="xls" target="formListagem:tabela"  encoding="iso-8859-1"
+											fileName="Usuarios" postProcessor="#{ExportarTabelaMB.gerarXLS}" />
+										</p:commandButton>
+									<span class="ui-separator" style="padding-right: 5px;">
+										<span class="fa fa-ellipsis-v SoftGray" />
+									</span>
+									<p:commandButton type="button" title="Relatório"
+										icon="fa fa-print" />
+								</f:facet>
+							</p:toolbar>
+						</h:form>
+					</div>
+
+
+					<h:form id="formListagem">
+
+						<p:dataTable id="tabela" var="usuario"
+							value="#{UsuarioMB.mostrarUsuarios()}" selectionMode="single"
+							reflow="true" selection="#{UsuarioMB.usuario}"
+							emptyMessage="Não Existe Dados para Exibir" rowKey="#{usuario.id}"
+							paginator="true" rows="10">
+
+							<f:facet name="header">
+                                LISTA DE USUÁRIOS
+                            </f:facet>
+
+							<p:column headerText="Id" sortBy="#{usuario.id}" filterBy="#{usuario.id}">
+								<h:outputText value="#{usuario.id}" />
+							</p:column>
+
+							<p:column headerText="Descrição" sortBy="#{usuario.pessoa.nome}"
+								filterBy="#{usuario.pessoa.nome}">
+								<h:outputText value="#{usuario.pessoa.nome}" />
+							</p:column>
+							
+			
+								<p:column headerText="Data / Cadastro" sortBy="#{usuario.dataCadastro}"
+								filterBy="#{usuario.dataCadastro}">
+								<h:outputText value="#{usuario.dataCadastro}" />
+							</p:column>
+							
+								<p:column headerText="Status" sortBy="#{usuario.ativoString}"
+								filterBy="#{usuario.ativoString}">
+								<h:outputText value="#{usuario.ativoString}" />
+							</p:column>
+	
+							<p:column exportable="false">
+								<p:commandButton actionListener="#{UsuarioMB.excluir}"
+									update=":mensagem :formListagem:tabela" icon="ui-icon-trash"
+									style="background-color:red;">
+									<p:confirm header="Confirmação"
+										message="Deseja excluir realmente?" icon="ui-icon-trash" />
+									<f:attribute name="usuarioSelecionado" value="#{usuario}" />
+								</p:commandButton>
+
+								<p:commandButton icon="ui-icon-pencil"
+									actionListener="#{UsuarioMB.alterar}"
+									update=":formCadastro:painel"
+									oncomplete="PF('dialogo').show();"
+									style="background-color:#00ABFF">
+									<f:attribute name="usuarioSelecionado" value="#{usuario}" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							<p:commandButton value="Sim" type="button"
+								styleClass="ui-confirmdialog-yes" icon="ui-icon-disk" />
+							<p:commandButton value="Não" type="button"
+								styleClass="ui-confirmdialog-no" icon="ui-icon-closethick" />
+						</p:confirmDialog>
+
+					</h:form>
+				</div>
+			</div>
+		</div>
+		<p:dialog header="Usuário - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="2">
+
+						<p:outputLabel for="dtCadastro" value="Data / Cadastro:" />
+					<p:calendar id="dtCadastro"
+						value="#{UsuarioMB.usuario.dataCadastro}" showOn="button" required="true" requiredMessage="Data / Cadastro obrigatória."/>
+					
+				
+					<p:outputLabel for="pessoa" value="Pessoa:" />
+					<p:selectOneMenu id="pessoa" filter="true" required="true"
+						requiredMessage="Pessoa obrigatória" style="width:198px"
+						value="#{UsuarioMB.usuario.pessoa}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma pessoa." />
+						<f:selectItems value="#{UsuarioMB.pessoas}" var="pessoa"
+							itemValue="#{pessoa}" itemLabel="#{pessoa.nome}" />
+					</p:selectOneMenu>
+					
+					<h:outputLabel value="Senha:" />
+        <p:password id="senha" value="#{UsuarioMB.usuario.senha}" feedback="true" required="true" requiredMessage="Senha obrigatória."
+                    placeholder="Senha"
+                    promptLabel="Insira uma senha" weakLabel="Fraca"
+                    goodLabel="Boa" strongLabel="Forte" />
+ 			
+ 			
+ 				<p:outputLabel for="tipo" value="Tipo de Usuário:" />
+ 				<p:selectOneRadio id="tipo" required="true" requiredMessage="Tipo de usuário obrigatório." value="#{UsuarioMB.usuario.tipo}">
+ 					<f:selectItem itemValue="A" itemLabel="Administrador"/>
+ 					<f:selectItem itemValue="G" itemLabel="Gerente"/>
+ 					<f:selectItem itemValue="B" itemLabel="Balconista"/>
+ 				</p:selectOneRadio>
+					
+					<p:outputLabel value="Ativo:" />
+					<p:selectBooleanCheckbox required="true" requiredMessage="Campo 'Ativo' obrigatório." value="#{UsuarioMB.usuario.ativo}"/>
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="fa fa-floppy-o"
+						actionListener="#{UsuarioMB.salvar}"
+						update=":mensagem :formCadastro:painel :formListagem:tabela" />
+					<p:commandButton value="Fechar" icon="fa fa-times" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+
+
+
+		</p:dialog>
+
+
+	</ui:define>
+
+</ui:composition>

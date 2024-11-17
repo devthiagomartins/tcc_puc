@@ -1,0 +1,208 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">Produtos</ui:define>
+	<ui:define name="content">
+		<h:head>
+	<h:outputScript library="js" name="scripts.js"/>
+	</h:head>
+	
+	
+		<p:growl id="mensagem" showDetail="true" autoUpdate="true" />
+		<div class="ui-g">
+			<div class="ui-g-12">
+				<div class="card card-w-title">
+					<h1>Cadastro de Produtos</h1>
+					<div class="card card-w-title">
+
+						<h:form id="formToolBar">
+
+							<p:toolbar style="background-color:#F2F8FA">
+								<f:facet name="left">
+									<p:commandButton value="Novo" icon="fa fa-plus"
+										oncomplete="PF('dialogo').show();"
+										actionListener="#{ProdutoMB.novo}"
+										update=":formCadastro:painel :mensagem" />
+
+								</f:facet>
+
+								<f:facet name="right">
+								
+								
+									<p:commandButton ajax="false" title="Exportar PDF"
+										style="background-color:#FA8072" icon="fa fa-file-pdf-o">
+										<p:dataExporter type="pdf" target="formListagem:tabela"  encoding="iso-8859-1"
+											fileName="Produtos" preProcessor="#{ExportarTabelaMB.gerarPDF}" />
+										</p:commandButton>
+									<p:commandButton ajax="false" title="Exportar EXCEL"
+										style="background-color:#088A08" icon="fa fa-file-excel-o">
+										<p:dataExporter type="xls" target="formListagem:tabela"  encoding="iso-8859-1"
+											fileName="Produtos" postProcessor="#{ExportarTabelaMB.gerarXLS}" />
+										</p:commandButton>
+									<span class="ui-separator" style="padding-right: 5px;">
+										<span class="fa fa-ellipsis-v SoftGray" />
+									</span>
+									<p:commandButton  id="btnImprimir" title="Relatório" ajax="false" immediate="true" process="@this" actionListener="#{ProdutoMB.imprimir}"
+										icon="fa fa-print" />
+								</f:facet>
+							</p:toolbar>
+						</h:form>
+					</div>
+
+
+					<h:form id="formListagem">
+
+						<p:dataTable id="tabela" var="prod"
+							value="#{ProdutoMB.mostrarProdutos()}" selectionMode="single"
+							reflow="true" selection="#{ProdutoMB.produto}"
+							emptyMessage="Não Existe Dados para Exibir" rowKey="#{prod.id}"
+							paginator="true" rows="10">
+
+							<f:facet name="header">
+                                LISTA DE PRODUTOS
+                            </f:facet>
+
+							<p:column headerText="Id" sortBy="#{prod.id}"
+								filterBy="#{prod.id}">
+								<h:outputText value="#{prod.id}" />
+							</p:column>
+
+							<p:column headerText="Descrição" sortBy="#{prod.descricao}"
+								filterBy="#{prod.descricao}">
+								<h:outputText value="#{prod.descricao}" />
+							</p:column>
+
+							<p:column headerText="Categoria" sortBy="#{prod.categoria.descricao}"
+								filterBy="#{prod.categoria.descricao}">
+								<h:outputText value="#{prod.categoria.descricao}" />
+							</p:column>
+							
+							<p:column headerText="Preço" sortBy="#{prod.preco}"
+								filterBy="#{prod.preco}">
+								<h:outputText value="#{prod.preco}"> 
+									<f:convertNumber locale="pt_BR" minFractionDigits="2"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Quantidade" sortBy="#{prod.quantidade}"
+								filterBy="#{prod.quantidade}">
+								<h:outputText value="#{prod.quantidade}" />
+							</p:column>
+
+
+
+
+							<p:column exportable="false">
+								<p:commandButton actionListener="#{ProdutoMB.excluir}"
+									update=":mensagem :formListagem:tabela" icon="ui-icon-trash"
+									style="background-color:red;">
+									<p:confirm header="Confirmação"
+										message="Deseja excluir realmente?" icon="ui-icon-trash" />
+									<f:attribute name="produtoSelecionado" value="#{prod}" />
+								</p:commandButton>
+
+								<p:commandButton icon="ui-icon-pencil"
+									actionListener="#{ProdutoMB.alterar}"
+									update=":formCadastro:painel"
+									oncomplete="PF('dialogo').show();"
+									style="background-color:#00ABFF">
+									<f:attribute name="produtoSelecionado" value="#{prod}" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							<p:commandButton value="Sim" type="button"
+								styleClass="ui-confirmdialog-yes" icon="ui-icon-disk" />
+							<p:commandButton value="Não" type="button"
+								styleClass="ui-confirmdialog-no" icon="ui-icon-closethick" />
+						</p:confirmDialog>
+
+					</h:form>
+				</div>
+			</div>
+		</div>
+		<p:dialog header="Produto - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="2">
+
+					<p:outputLabel for="dtCadastro" value="Data / Cadastro:" />
+					<p:calendar id="dtCadastro"
+						value="#{ProdutoMB.produto.dataCadastro}" showOn="button" required="true" requiredMessage="Data / Cadastro obrigatória."/>
+
+					<p:outputLabel for="categoria" value="Categoria:" />
+					<p:selectOneMenu id="categoria" filter="true" required="true" requiredMessage="Categoria obrigatória" style="width:198px"
+						value="#{ProdutoMB.produto.categoria}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma categoria" />
+						<f:selectItems value="#{ProdutoMB.categorias}" var="categoria"
+							itemValue="#{categoria}" itemLabel="#{categoria.descricao}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="descricao" value="Descrição:" />
+					<p:inputText id="descricao" required="true" 
+						requiredMessage="Descrição do produto obrigatória."
+						value="#{ProdutoMB.produto.descricao}" size="30" />
+
+					<p:outputLabel for="preco" value="Preço:" />
+					<p:inputText id="preco" required="true" placeholder="R$"
+						requiredMessage="Preço obrigatório."
+						converterMessage="O valor informado no campo 'Preço' é inválido."
+						validatorMessage="Informe um valor entre 0.01 e 9999 para o campo 'Preço'."
+						value="#{ProdutoMB.produto.preco}" size="30">
+						<f:validateDoubleRange minimum="0.01" maximum="9999.99" />
+						<f:convertNumber locale="pt_BR" minFractionDigits="2"/>
+					</p:inputText>
+						
+						<p:outputLabel for="qtde" value="Quantidade:" />
+					<p:inputText id="qtde" required="true" 
+						requiredMessage="Quantidade obrigatória."
+						converterMessage="O valor informado no campo 'Quantidade' é inválido."
+						validatorMessage="Informe um valor entre 0 e 99999 para o campo 'Quantidade'."
+						value="#{ProdutoMB.produto.quantidade}" size="30">
+						<f:validateLongRange minimum="0" maximum="99999"/>
+					</p:inputText>
+
+					<p:outputLabel for="cont" value="Contraindicações:" />
+					<p:inputText id="cont" required="true"
+						requiredMessage="Contraindicações obrigatória."
+						value="#{ProdutoMB.produto.contraIndicacoes}" />
+
+					<p:outputLabel for="fabric" value="Fabricante:" />
+					<p:selectOneMenu id="fabric" filter="true" required="true" requiredMessage="Fabricante obrigatório."
+						value="#{ProdutoMB.produto.fabricante}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione um fabricante" />
+						<f:selectItems value="#{ProdutoMB.fabricantes}" var="fabricante"
+							itemValue="#{fabricante}" itemLabel="#{fabricante.descricao}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="dtValidade" value="Data / Validade:" />
+					<p:calendar id="dtValidade" required="true" requiredMessage="Data / Validade obrigatória."
+						value="#{ProdutoMB.produto.dataValidade}" showOn="button" />
+
+
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="fa fa-floppy-o"
+						actionListener="#{ProdutoMB.salvar}" 
+						update=":mensagem :formCadastro:painel :formListagem:tabela" />
+					<p:commandButton value="Fechar" icon="fa fa-times" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+
+
+
+		</p:dialog>
+
+
+	</ui:define>
+
+</ui:composition>
